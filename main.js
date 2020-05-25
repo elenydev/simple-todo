@@ -18,15 +18,43 @@ function addItem(){
         id++;
         addDeleteBtn(items);
         clear();
-        
-        
+        saveLocalTodo(input);
     }
     function makeContent(value,div){
         div.textContent=value;
-        clear();
-        
+        clear(); 
     }
-
+    function saveLocalTodo(todo){
+        let todos;
+        if(localStorage.getItem("todos")===null){
+            todos=[];
+        }
+        else{
+        todos=JSON.parse(localStorage.getItem("todos"))
+        }
+        todos.push(todo);
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }
+    function showTodo(){
+        let todos;
+        if(localStorage.getItem("todos")==="null"){
+            todos=[];
+        }
+        else{
+        todos=JSON.parse(localStorage.getItem("todos"))
+        }
+        todos.forEach(function(todo){
+            const div=document.createElement('div');
+            div.classList.add('content-container');
+            content.appendChild(div);
+            div.textContent=todo;
+            const deleteButton=document.createElement('button');
+            deleteButton.classList.add('delete');
+            div.appendChild(deleteButton);
+            deleteButton.textContent='X';
+        });
+    }
+    
     function addDeleteBtn(tab){
         tab.forEach(onediv =>{
             const deleteButton=document.createElement('button');
@@ -44,11 +72,26 @@ function deleteElement(e){
     const item=e.target;
     if(item.classList[0]==='delete'){
         const prev=item.parentElement;
-        prev.style.transform="scale(0)";
-        prev.addEventListener('animationend', function(prev){
+        prev.classList.add('hide');
+        item.textContent="";
+        removelocaltask(prev);
+        prev.addEventListener('transitionend', function(){
+           
             prev.remove();
         });
     }
+}
+function removelocaltask(todo){
+    if(localStorage.getItem("todos")==="null"){
+        todos=[];
+    }
+    else{
+    todos=JSON.parse(localStorage.getItem("todos"))
+    
+    }
+    const todovalue=todo.textContent;  
+    todos.splice(todos.indexOf(todovalue), 1);
+    localStorage.setItem("todos", JSON.stringify(todos));
 }   
 
 content.addEventListener('click', deleteElement);
@@ -58,6 +101,7 @@ inputevent.addEventListener('keypress', function(e){
    }});
 addBtn.addEventListener('click', makeDiv);  
 inputevent.textContent="";
+showTodo();
 }
 
 addItem();
