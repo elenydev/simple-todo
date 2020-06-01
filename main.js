@@ -72,13 +72,15 @@ function deleteElement(e){
     const item=e.target;
     if(item.classList[0]==='delete'){
         const prev=item.parentElement;
+        if(confirm("Are you sure u want to delete task?")){
         prev.classList.add('hide');
         item.textContent="";
         removelocaltask(prev);
         prev.addEventListener('transitionend', function(){
            
             prev.remove();
-        });
+        });}
+        
     }
 }
 function removelocaltask(todo){
